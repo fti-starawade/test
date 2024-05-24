@@ -71,19 +71,7 @@ def draw_bounding_boxes(image_path, json_response, output_image_path):
         
         # Draw bounding box
         cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
-        
-        # Minimize font size for labels
-        font_scale = 0.5  # Adjust this value as needed
-        thickness = 1
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        text_size = cv2.getTextSize(label["Name"], font, font_scale, thickness)[0]
-        
-        # Calculate position for the text
-        text_x = x
-        text_y = y - 5 if y - 5 > 5 else y + 5
-        
-        # Draw label text
-        cv2.putText(image, label["Name"], (text_x, text_y), font, font_scale, color, thickness)
+        cv2.putText(image, label["Name"], (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
 
     # Save image with bounding boxes
     cv2.imwrite(output_image_path, image)
@@ -118,10 +106,10 @@ def main():
             draw_bounding_boxes(os.path.basename(args.image_path), json_response, output_image_path)
             
             # Show the image with bounding boxes
-            img = cv2.imread(output_image_path)
-            cv2.imshow('Image with Bounding Boxes', img)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            # img = cv2.imread(output_image_path)
+            # cv2.imshow('Image with Bounding Boxes', img)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
             
             # Remove the downloaded image from S3
             try:
