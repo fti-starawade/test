@@ -110,6 +110,14 @@ def main():
             cv2.imshow('Image with Bounding Boxes', img)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
+            
+            # Remove the downloaded image from S3
+            try:
+                os.remove(os.path.basename(args.image_path))
+                print("Downloaded image removed from S3.")
+            except Exception as e:
+                print(f"Error removing downloaded image from S3: {e}")
 
 if __name__ == "__main__":
     main()
+
