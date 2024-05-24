@@ -71,7 +71,19 @@ def draw_bounding_boxes(image_path, json_response, output_image_path):
         
         # Draw bounding box
         cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
-        cv2.putText(image, label["Name"], (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
+        
+        # Minimize font size for labels
+        font_scale = 0.5  # Adjust this value as needed
+        thickness = 1
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        text_size = cv2.getTextSize(label["Name"], font, font_scale, thickness)[0]
+        
+        # Calculate position for the text
+        text_x = x
+        text_y = y - 5 if y - 5 > 5 else y + 5
+        
+        # Draw label text
+        cv2.putText(image, label["Name"], (text_x, text_y), font, font_scale, color, thickness)
 
     # Save image with bounding boxes
     cv2.imwrite(output_image_path, image)
@@ -113,11 +125,11 @@ def main():
             
             # Remove the downloaded image from S3
             try:
-                os.remove(os.path.basename(args.image_path))
+                s3 = boto3.client('s3')
+                s3.delete_object(Bucket=args.bucket_name, Key=args.image_path)
                 print("Downloaded image removed from S3.")
             except Exception as e:
                 print(f"Error removing downloaded image from S3: {e}")
 
 if __name__ == "__main__":
     main()
-
